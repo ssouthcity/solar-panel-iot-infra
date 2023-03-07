@@ -21,29 +21,37 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "example" {
-  name     = "example-resources"
+locals {
+  prefix = "solarpanel"
+}
+
+resource "azurerm_resource_group" "solar" {
+  name     = "${prefix}-resources"
   location = "West Europe"
 }
 
-resource "azurerm_storage_account" "example" {
-  name                     = "examplestorage"
-  resource_group_name      = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
+resource "random_string" "storageaccountsuffix" {
+  length = 5
+}
+
+resource "azurerm_storage_account" "solar" {
+  name                     = "${prefix}storage${random_string.storageaccountsuffix}"
+  resource_group_name      = azurerm_resource_group.solar.name
+  location                 = azurerm_resource_group.solar.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "example" {
-  name                  = "examplecontainer"
-  storage_account_name  = azurerm_storage_account.example.name
+resource "azurerm_storage_container" "solar" {
+  name                  = "${prefix}data"
+  storage_account_name  = azurerm_storage_account.solar.name
   container_access_type = "private"
 }
 
-resource "azurerm_iothub" "example" {
-  name                = "Example-IoTHub"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
+resource "azurerm_iothub" "solar" {
+  name                = "${prefix}iothub"
+  resource_group_name = azurerm_resource_group.solar.name
+  location            = azurerm_resource_group.solar.location
 
   sku {
     name     = "S1"
@@ -52,11 +60,11 @@ resource "azurerm_iothub" "example" {
 
   endpoint {
     type                       = "AzureIotHub.StorageContainer"
-    connection_string          = azurerm_storage_account.example.primary_blob_connection_string
+    connection_string          = azurerm_storage_account.solar.primary_blob_connection_string
     name                       = "export"
     batch_frequency_in_seconds = 60
     max_chunk_size_in_bytes    = 10485760
-    container_name             = azurerm_storage_container.example.name
+    container_name             = azurerm_storage_container.solar.name
     encoding                   = "Avro"
     file_name_format           = "{iothub}/{partition}_{YYYY}_{MM}_{DD}_{HH}_{mm}"
   }
