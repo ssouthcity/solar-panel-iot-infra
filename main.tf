@@ -22,11 +22,11 @@ provider "azurerm" {
 }
 
 locals {
-  prefix = "solarpanel"
+  prefix = "slrpnl"
 }
 
 resource "azurerm_resource_group" "solar" {
-  name     = "${prefix}-resources"
+  name     = "${local.prefix}-resources"
   location = "West Europe"
 }
 
@@ -35,7 +35,7 @@ resource "random_string" "storageaccountsuffix" {
 }
 
 resource "azurerm_storage_account" "solar" {
-  name                     = "${prefix}storage${random_string.storageaccountsuffix}"
+  name                     = "${local.prefix}storage${random_string.storageaccountsuffix}"
   resource_group_name      = azurerm_resource_group.solar.name
   location                 = azurerm_resource_group.solar.location
   account_tier             = "Standard"
@@ -43,13 +43,13 @@ resource "azurerm_storage_account" "solar" {
 }
 
 resource "azurerm_storage_container" "solar" {
-  name                  = "${prefix}data"
+  name                  = "${local.prefix}data"
   storage_account_name  = azurerm_storage_account.solar.name
   container_access_type = "private"
 }
 
 resource "azurerm_iothub" "solar" {
-  name                = "${prefix}iothub"
+  name                = "${local.prefix}iothub"
   resource_group_name = azurerm_resource_group.solar.name
   location            = azurerm_resource_group.solar.location
 
