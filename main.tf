@@ -32,6 +32,10 @@ resource "azurerm_resource_group" "solar" {
 
 resource "random_string" "storage_suffix" {
   length = 5
+  lower = true
+  numeric = true
+  special = false
+  upper  = false
 }
 
 resource "azurerm_storage_account" "solar" {
