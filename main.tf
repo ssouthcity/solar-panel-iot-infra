@@ -30,12 +30,12 @@ resource "azurerm_resource_group" "solar" {
   location = "West Europe"
 }
 
-resource "random_string" "storageaccountsuffix" {
+resource "random_string" "storage_suffix" {
   length = 5
 }
 
 resource "azurerm_storage_account" "solar" {
-  name                     = "${local.prefix}storage${random_string.storageaccountsuffix}"
+  name                     = "${local.prefix}storage${random_string.storage_suffix.result}"
   resource_group_name      = azurerm_resource_group.solar.name
   location                 = azurerm_resource_group.solar.location
   account_tier             = "Standard"
