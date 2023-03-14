@@ -1,12 +1,4 @@
 terraform {
-  cloud {
-    organization = "southcity"
-
-    workspaces {
-      name = "solar-panel-cloud-azure"
-    }
-  }
-
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
