@@ -23,11 +23,11 @@ resource "azurerm_resource_group" "solar" {
 }
 
 resource "random_string" "storage_suffix" {
-  length = 5
-  lower = true
+  length  = 5
+  lower   = true
   numeric = true
   special = false
-  upper  = false
+  upper   = false
 }
 
 resource "azurerm_storage_account" "solar" {
@@ -36,6 +36,7 @@ resource "azurerm_storage_account" "solar" {
   location                 = azurerm_resource_group.solar.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  is_hns_enabled           = true
 }
 
 resource "azurerm_storage_container" "solar" {
